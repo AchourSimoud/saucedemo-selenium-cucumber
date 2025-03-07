@@ -27,12 +27,7 @@ public class WebDriverTool {
                 break;
                 
             default:
-                ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("--headless=new"); // Enable headless mode
-                chromeOptions.addArguments("--no-sandbox"); // Required for running in Docker
-                chromeOptions.addArguments("--disable-dev-shm-usage"); // Recommended for Docker
-                //chromeOptions.addArguments("--window-size=1920,1080"); // recommended for correct display
-                driver = new ChromeDriver(chromeOptions);
+                driver = new ChromeDriver();
                 break;
 
         }

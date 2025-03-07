@@ -18,6 +18,9 @@ public class WebDriverTool {
                 chromeOptions.addArguments("--no-sandbox"); // Required for running in Docker
                 chromeOptions.addArguments("--disable-dev-shm-usage"); // Recommended for Docker
                 //chromeOptions.addArguments("--window-size=1920,1080"); // recommended for correct display
+                chromeOptions.addArguments("--disable-gpu");
+                chromeOptions.addArguments("--disable-software-rasterizer");
+                chromeOptions.addArguments("--remote-debugging-port=9222");
                 driver = new ChromeDriver(chromeOptions);
                 break;
 

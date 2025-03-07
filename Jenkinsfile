@@ -2,7 +2,7 @@ pipeline {
     agent {
         dockerfile {
             filename 'Dockerfile'
-            dir 'Dockerfile'
+            args '--entrypoint='''
         }
     }
 
@@ -13,18 +13,18 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/AchourSimoud/saucedemo-selenium-cucumber.git'
+                git "https://github.com/AchourSimoud/saucedemo-selenium-cucumber.git"
             }
         }
         stage('Grant bash files permission') {
             steps {
-                sh 'chmod +x batch/*.sh'
+                sh "chmod +x batch/*.sh"
             }
         }
 
         stage('Execute tests') {
             steps {
-                sh '${params.TAG}.sh'
+                sh "${params.TAG}.sh"
             }
         }
     }

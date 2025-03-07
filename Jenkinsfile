@@ -13,7 +13,8 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git "https://github.com/AchourSimoud/saucedemo-selenium-cucumber.git"
+                git branch: 'main', 
+                url: 'https://github.com/AchourSimoud/saucedemo-selenium-cucumber.git'
             }
         }
         stage('Grant bash files permission') {

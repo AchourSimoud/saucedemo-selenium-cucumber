@@ -5,15 +5,26 @@ pipeline {
             dir 'Dockerfile'
         }
     }
+
+    parameters {
+        string(name: 'TAG', defaultValue: 'run_login_tests_chrome', description: 'Tag to execute')
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/votre-repo/test-selenium.git'
+                git 'https://github.com/AchourSimoud/saucedemo-selenium-cucumber.git'
             }
         }
-        stage('Build and Test') {
+        stage('Grant bash files permission') {
             steps {
-                sh 'mvn clean test'
+                sh 'chmod +x batch/*.sh'
+            }
+        }
+
+        stage('Execute tests') {
+            steps {
+                sh '${params.TAG}.sh'
             }
         }
     }

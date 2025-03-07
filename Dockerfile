@@ -37,8 +37,6 @@ RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/
 # Configurer le répertoire de travail
 WORKDIR /app
 
-# Exposer le port pour Jenkins (facultatif)
-EXPOSE 8080
 
 # Définir le point d'entrée
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD ["bash"]

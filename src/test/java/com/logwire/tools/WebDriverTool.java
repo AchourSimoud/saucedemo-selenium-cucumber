@@ -12,18 +12,30 @@ public class WebDriverTool {
         String browser = System.getProperty("browser","chrome");
         switch (browser.toLowerCase()) {
             case "chrome":
-                driver = new ChromeDriver();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--headless=new"); // Enable headless mode
+                chromeOptions.addArguments("--no-sandbox"); // Required for running in Docker
+                chromeOptions.addArguments("--disable-dev-shm-usage"); // Recommended for Docker
+                //chromeOptions.addArguments("--window-size=1920,1080"); // recommended for correct display
+                driver = new ChromeDriver(chromeOptions);
                 break;
+
 
             case "firefoxe":
                 driver = new FirefoxDriver();
                 break;
                 
             default:
-                driver = new ChromeDriver();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--headless=new"); // Enable headless mode
+                chromeOptions.addArguments("--no-sandbox"); // Required for running in Docker
+                chromeOptions.addArguments("--disable-dev-shm-usage"); // Recommended for Docker
+                //chromeOptions.addArguments("--window-size=1920,1080"); // recommended for correct display
+                driver = new ChromeDriver(chromeOptions);
                 break;
+
         }
-        driver.manage().window().maximize();
+        //driver.manage().window().maximize();
         
     }
 

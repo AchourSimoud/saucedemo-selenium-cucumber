@@ -1,8 +1,7 @@
 pipeline {
     agent {
-        docker {
-            buildArgs '--no-cache'
-            filename 'Dockerfile'  // Nom du fichier Dockerfile
+        dockerfile {
+            filename 'Dockerfile'
         }
     }
 

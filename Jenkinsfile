@@ -25,7 +25,7 @@ pipeline {
 
         stage('Execute tests') {
             steps {
-                sh "${params.TAG}.sh"
+                sh "batch/${params.TAG}.sh"
             }
         }
     }

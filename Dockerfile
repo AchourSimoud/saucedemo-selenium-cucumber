@@ -1,43 +1,48 @@
-# Utiliser une image Debian minimale
-FROM debian:bullseye-slim
+FROM debian:slim
 
-# Définir les variables d'environnement
+# Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-# Installer les dépendances nécessaires
-RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk \
-    maven \
+# Install essential packages, Java, Maven, and Chrome dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
-    curl \
-    unzip \
     gnupg \
     ca-certificates \
-    --no-install-recommends && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    curl \
+    unzip \
+    openjdk-17-jdk \
+    maven \
+    libglib2.0-0 \
+    libnss3 \
+    libgconf-2-4 \
+    libfontconfig1 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Installer git
 RUN apt-get update && apt-get install -y git
 
-# Installer Chrome
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-    apt-get update && apt-get install -y google-chrome-stable
+# Install Chrome (needed for ChromeDriver)
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
 
-# Installer ChromeDriver
-RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE") && \
-    wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" && \
-    unzip chromedriver_linux64.zip && \
-    mv chromedriver /usr/local/bin/chromedriver && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm chromedriver_linux64.zip
+# Install ChromeDriver
+# Note: This gets the latest version. You might want to pin to a specific version for stability
+RUN CHROME_VERSION=$(google-chrome --version | awk -F '[ .]' '{print $3"."$4"."$5}') \
+    && CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") \
+    && wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" \
+    && unzip chromedriver_linux64.zip \
+    && mv chromedriver /usr/local/bin/chromedriver \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm chromedriver_linux64.zip
 
+# Verify installations
+RUN java -version && mvn -version && chromedriver --version
 
-# Configurer le répertoire de travail
+# Set working directory
 WORKDIR /app
 
-
-# Définir le point d'entrée
-CMD ["bash"]
+# Keep container running (optional, for debugging)
+# CMD ["tail", "-f", "/dev/null"]

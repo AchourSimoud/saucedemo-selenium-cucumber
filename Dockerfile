@@ -4,7 +4,6 @@ FROM debian:bullseye-slim
 # Définir les variables d'environnement
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-ENV XDG_CACHE_HOME=/tmp/.cache
 
 # Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
@@ -35,6 +34,9 @@ RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/
     chmod +x /usr/local/bin/chromedriver && \
     rm chromedriver_linux64.zip
 
+
+# Set the user to root
+USER root
 
 # Configurer le répertoire de travail
 WORKDIR /app

@@ -14,13 +14,14 @@ public class WebDriverTool {
         switch (browser.toLowerCase()) {
             case "chrome":
                 ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("--headless=new"); // Enable headless mode
-                chromeOptions.addArguments("--no-sandbox"); // Required for running in Docker
-                chromeOptions.addArguments("--disable-dev-shm-usage"); // Recommended for Docker
-                //chromeOptions.addArguments("--window-size=1920,1080"); // recommended for correct display
+                chromeOptions.addArguments("--headless=new");
+                chromeOptions.addArguments("--no-sandbox");
+                chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.addArguments("--disable-gpu");
                 chromeOptions.addArguments("--disable-software-rasterizer");
                 chromeOptions.addArguments("--remote-debugging-port=9222");
+                chromeOptions.addArguments("--disable-crash-reporter");   // Ajout pour éviter des crashs silencieux
+                chromeOptions.addArguments("--disable-features=VizDisplayCompositor"); // Pour stabilité en headless
                 driver = new ChromeDriver(chromeOptions);
                 break;
 

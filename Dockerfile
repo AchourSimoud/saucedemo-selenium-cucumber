@@ -4,6 +4,7 @@ FROM debian:bullseye-slim
 # Définir les variables d'environnement
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV XDG_CACHE_HOME=/tmp/.cache
 
 # Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \

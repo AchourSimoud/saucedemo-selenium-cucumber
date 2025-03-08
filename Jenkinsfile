@@ -20,6 +20,10 @@ pipeline {
         }
         stage('Grant bash files permission') {
             steps {
+
+                sh "mkdir -p /home/selenium/.cache/selenium"
+                sh "chmod -R 777 /home/selenium/.cache/selenium"
+                sh "export SELENIUM_CACHE_DIR=/home/selenium/.cache/selenium"
                 sh "chmod +x batch/*.sh"
             }
         }

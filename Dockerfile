@@ -39,7 +39,8 @@ RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/
     chmod +x /usr/local/bin/chromedriver && \
     rm chromedriver_linux64.zip
 
-
+# Créer l'utilisateur seluser
+RUN useradd -m -s /bin/bash seluser
 
 # Ajouter un volume pour le ChromeDriver
 # Ce volume permet de monter un répertoire local contenant chromeDriver à l'intérieur du conteneur

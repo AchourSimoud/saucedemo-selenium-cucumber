@@ -41,12 +41,17 @@ RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/
 
 
 
-# Définir les variables d'environnement pour ChromeDriver
-ENV CHROMEDRIVER_DIR /usr/local/bin
-ENV PATH $CHROMEDRIVER_DIR:$PATH
+# Ajouter un volume pour le ChromeDriver
+# Ce volume permet de monter un répertoire local contenant chromeDriver à l'intérieur du conteneur
+VOLUME ["/drivers:/usr/local/bin/chromedriver"]
+VOLUME ["/home/seluser/.cache/selenium/chrome/user-data:/home/seluser/.cache/selenium/chrome/user-data"]
 
-# Exposer le port par défaut de ChromeDriver
-EXPOSE 9515
+# Créer le répertoire de cache pour Selenium et ajuster les permissions
+RUN mkdir -p /home/seluser/.cache/selenium && \
+    chown -R seluser:seluser /home/seluser/.cache/selenium
 
-# Définir le point d'entrée
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+# Revenir à l'utilisateur selenium pour exécuter Selenium en toute sécurité
+USER seluser
+
+# Exposer le port WebDriver
+EXPOSE 4444

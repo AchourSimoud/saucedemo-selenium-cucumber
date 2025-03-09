@@ -1,6 +1,10 @@
 # Utiliser une image Debian minimale
 FROM debian:bullseye-slim
 
+# Set the user to root
+USER root
+
+
 # Définir les variables d'environnement
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
@@ -36,8 +40,6 @@ RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/
     rm chromedriver_linux64.zip
 
 
-# Set the user to root
-USER root
 
 # Configurer le répertoire de travail
 WORKDIR /app

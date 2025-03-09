@@ -3,7 +3,7 @@ pipeline {
         dockerfile {
             filename 'Dockerfile'
             dir '.'
-            args '-v /dev/shm:/dev/shm --shm-size=2g'
+            args '-v /dev/shm:/dev/shm --shm-size=2g --entrypoint='' --privileged -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 

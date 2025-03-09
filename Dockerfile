@@ -1,43 +1,26 @@
-# Utiliser une image Debian légère comme base
-FROM debian:bullseye-slim
+# Utiliser l'image de base selenium/standalone-chrome
+FROM selenium/standalone-chrome:latest
 
-# Mettre à jour les paquets et installer les dépendances nécessaires
-RUN apt-get update && apt-get install -y \
-    wget \
-    curl \
-    gnupg \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Passer à l'utilisateur root pour installer des outils
+USER root
 
-# Installer Java
-RUN apt-get install -y openjdk-11-jdk
+# Mettre à jour et installer Java et Maven
+RUN apt-get update && \
+    apt-get install -y maven openjdk-21-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Installer Maven
-RUN apt-get install -y maven
+# Ajouter un volume pour le ChromeDriver
+# Ce volume permet de monter un répertoire local contenant chromeDriver à l'intérieur du conteneur
+VOLUME ["/drivers:/usr/local/bin/chromedriver"]
+VOLUME ["/home/seluser/.cache/selenium/chrome/user-data:/home/seluser/.cache/selenium/chrome/user-data"]
 
-# Installer Git
-RUN apt-get install -y git
+# Créer le répertoire de cache pour Selenium et ajuster les permissions
+RUN mkdir -p /home/seluser/.cache/selenium && \
+    chown -R seluser:seluser /home/seluser/.cache/selenium
 
-# Installer Google Chrome
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
+# Revenir à l'utilisateur selenium pour exécuter Selenium en toute sécurité
+USER seluser
 
-# Installer ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | grep -o '[0-9.]*' | head -1) \
-    && CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION) \
-    && wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip \
-    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
-    && rm /tmp/chromedriver.zip
-
-# Définir les variables d'environnement pour ChromeDriver
-ENV CHROMEDRIVER_DIR /usr/local/bin
-ENV PATH $CHROMEDRIVER_DIR:$PATH
-
-# Exposer le port par défaut de ChromeDriver
-EXPOSE 9515
-
-# Définir le point d'entrée
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+# Exposer le port WebDriver
+EXPOSE 4444

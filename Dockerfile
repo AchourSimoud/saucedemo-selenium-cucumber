@@ -41,18 +41,19 @@ RUN CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/
 
 # Créer l'utilisateur seluser
 RUN useradd -m -s /bin/bash seluser
+USER seluser
 
 # Ajouter un volume pour le ChromeDriver
 # Ce volume permet de monter un répertoire local contenant chromeDriver à l'intérieur du conteneur
 VOLUME ["/drivers:/usr/local/bin/chromedriver"]
 VOLUME ["/home/seluser/.cache/selenium/chrome/user-data:/home/seluser/.cache/selenium/chrome/user-data"]
 
+
 # Créer le répertoire de cache pour Selenium et ajuster les permissions
 RUN mkdir -p /home/seluser/.cache/selenium && \
     chown -R seluser:seluser /home/seluser/.cache/selenium
 
-# Revenir à l'utilisateur selenium pour exécuter Selenium en toute sécurité
-USER seluser
+
 
 # Exposer le port WebDriver
 EXPOSE 4444
